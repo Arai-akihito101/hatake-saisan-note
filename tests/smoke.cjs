@@ -1,0 +1,26 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const html = fs.readFileSync('public/index.html', 'utf8');
+const match = html.match(/<script>([\s\S]*?)<\/script>/);
+assert.ok(match, 'script block exists');
+new vm.Script(match[1], {filename:'inline-app.js'});
+assert.match(html, /lang="ja"/);
+assert.match(html, /name="viewport"/);
+const sample={crop:'ミニトマト（架空の例）',area:'100',yield:'250',price:'400',saleRate:'85',commission:'10',fixed:'12000',variable:'80',other:'18000',hours:'60',wage:'1000'};
+const nodes={};
+function element(id){return nodes[id] ||= {value:sample[id]??'',textContent:'',hidden:false,style:{},className:'',children:[],addEventListener(){},replaceChildren(...x){this.children=x},append(...x){this.children.push(...x)},click(){}}}
+const context={document:{getElementById:element,createElement:()=>({textContent:'',className:'',children:[],append(...x){this.children.push(...x)},click(){}})},localStorage:{getItem:()=>null,setItem:()=>{}},URL:{createObjectURL:()=>'',revokeObjectURL:()=>{}},Blob:class{},setTimeout:()=>{},console};
+vm.createContext(context);vm.runInContext(match[1],context,{timeout:3000});
+assert.equal(element('revenue').textContent,'85,000円');
+assert.equal(element('cash').textContent,'26,500円');
+assert.equal(element('profit').textContent,'-33,500円');
+assert.match(element('breakRate').textContent,/122\.2%/);
+assert.match(element('advice').textContent,/100%/);
+assert.equal(element('yieldCases').children.length,3);
+assert.equal(element('saleCases').children.length,3);
+element('area').value='0';vm.runInContext('render()',context);assert.equal(element('error').hidden,false);
+element('area').value='100';vm.runInContext('render()',context);assert.equal(element('error').hidden,true);
+element('saleRate').value='101';vm.runInContext('render()',context);assert.equal(element('error').hidden,false);
+console.log('11 smoke assertions passed');
