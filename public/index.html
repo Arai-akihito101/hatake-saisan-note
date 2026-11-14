@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="収穫量、売れ残り、直売手数料、労働時間から農産物販売の採算と黒字化に必要な条件を無料で試算。入力内容は端末内で処理します。"><title>畑の採算ノート | 農産物の利益・損益分岐を無料計算</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;color:#17372d;background:#f3f6ef;font-size:16px}*{box-sizing:border-box}body{margin:0}header{background:#153e31;color:#fff;padding:30px max(20px,calc((100vw - 1020px)/2))}header h1{margin:0 0 8px;font-size:clamp(1.6rem,4vw,2.3rem)}header p{margin:0;color:#d4e6d9;line-height:1.8}main{max-width:1020px;margin:28px auto;padding:0 16px 45px}.tag{display:inline-block;background:#dff1df;color:#21573b;border-radius:50px;padding:5px 11px;font-size:.77rem;font-weight:700;margin-bottom:12px}.layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:#fff;border:1px solid #dce7dc;border-radius:18px;padding:23px;box-shadow:0 5px 28px #17372d0c}.panel h2{font-size:1.17rem;margin:0 0 8px}.desc{color:#597065;font-size:.86rem;line-height:1.7;margin:0 0 15px}.inputs{display:grid;grid-template-columns:1fr 1fr;gap:13px}label{display:block;color:#365647;font-size:.86rem;font-weight:600}input{display:block;width:100%;font:inherit;margin-top:5px;border:1px solid #c7d7c9;border-radius:9px;padding:11px 10px;background:#fcfefb;color:#193b2e}input:focus{outline:2px solid #7db993;outline-offset:1px}.wide{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}button{border:0;border-radius:9px;padding:11px 15px;background:#176746;color:white;font:inherit;font-weight:700;cursor:pointer}button.secondary{background:#e8f0e8;color:#28513a}button:hover{filter:brightness(.94)}.results{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metric{padding:15px;border-radius:12px;background:#f2f7f1}.metric span{display:block;font-size:.8rem;color:#567062}.metric strong{display:block;font-size:clamp(1.1rem,2.5vw,1.5rem);margin-top:6px;word-wrap:break-word}.positive{color:#087746}.negative{color:#ad3939}.wide-metric{grid-column:1/-1;background:#e6f1e7}.hint{font-size:.87rem;line-height:1.75;color:#395b48}.alert{background:#fff2e9;color:#83471f;padding:12px;border-radius:10px;font-size:.86rem;line-height:1.7}.error{background:#ffe8e8;color:#9b2222;padding:13px;border-radius:10px;margin-bottom:13px}.rows{margin:0;padding:0;list-style:none}.rows li{display:flex;justify-content:space-between;border-bottom:1px solid #e6ece5;padding:12px 0;gap:8px;font-size:.9rem}.rows li:last-child{border-bottom:0}.rows strong{text-align:right}footer{text-align:center;font-size:.8rem;color:#607369;line-height:1.8;margin-top:25px}@media(max-width:760px){.layout{grid-template-columns:1fr}.panel{padding:18px}}@media(max-width:410px){.inputs{grid-template-columns:1fr}.results{grid-template-columns:1fr}.wide-metric{grid-column:auto}}
+</style></head><body>
+<header><div class="tag">無料・登録不要・端末内で計算</div><h1>畑の採算ノート</h1><p>その作物、いくら売れれば黒字？<br>収穫ロス・直売手数料・自分の労働も含めて、採算を見える化。</p></header>
+<main><div class="layout"><section class="panel"><h2>1. 栽培と販売の条件</h2><p class="desc">まずは架空のミニトマトの例を入力済みです。ご自身の数値に変更すると結果が更新されます。</p>
+<div class="inputs" id="fields">
+<label class="wide">作物名<input id="crop" value="ミニトマト（架空の例）"></label>
+<label>栽培面積（㎡）<input id="area" type="number" min="0" value="100"></label>
+<label>収穫量（kg）<input id="yield" type="number" min="0" value="250"></label>
+<label>販売価格（円/kg）<input id="price" type="number" min="0" value="400"></label>
+<label>販売可能率（%）<input id="saleRate" type="number" min="0" max="100" value="85"></label>
+<label>販売手数料（%）<input id="commission" type="number" min="0" max="99.999" value="10"></label>
+<label>固定費（円）<input id="fixed" type="number" min="0" value="12000"></label>
+<label>変動費（円/収穫kg）<input id="variable" type="number" min="0" value="80"></label>
+<label>その他費用（円）<input id="other" type="number" min="0" value="18000"></label>
+<label>労働時間（時間）<input id="hours" type="number" min="0" value="60"></label>
+<label>自家労働の評価時給（円）<input id="wage" type="number" min="0" value="1000"></label></div>
+<div class="actions"><button id="save">この端末に保存</button><button class="secondary" id="csv">CSV出力</button><button class="secondary" id="reset">例に戻す</button></div><p id="status" class="hint" role="status"></p>
+</section><section class="panel"><h2>2. 採算の結果</h2><p class="desc">現金収支と、自分の労働を費用として評価した収支を分けて表示します。</p><div id="error" class="error" hidden></div>
+<div class="results"><div class="metric wide-metric"><span>労働評価込みの収支</span><strong id="profit">—</strong></div><div class="metric"><span>現金収支</span><strong id="cash">—</strong></div><div class="metric"><span>売上</span><strong id="revenue">—</strong></div><div class="metric"><span>販売量</span><strong id="sold">—</strong></div><div class="metric"><span>販売手数料</span><strong id="fee">—</strong></div><div class="metric"><span>黒字化に必要な収穫量</span><strong id="breakYield">—</strong></div><div class="metric"><span>黒字化に必要な販売価格</span><strong id="breakPrice">—</strong></div><div class="metric wide-metric"><span>黒字化に必要な販売可能率</span><strong id="breakRate">—</strong></div></div><p id="advice" class="alert"></p>
+<h2 style="margin-top:25px">3. 条件が変わると？</h2><p class="desc">以下は入力条件だけを変えた感度分析です。将来の収穫を予測するものではありません。</p><h3 style="font-size:.94rem">収穫量を±20%変えた場合</h3><ul id="yieldCases" class="rows"></ul><h3 style="font-size:.94rem">販売可能率を±10ポイント変えた場合</h3><ul id="saleCases" class="rows"></ul></section></div>
+<footer>計算はブラウザー内で完結し、入力内容はサーバーへ送信しません。保存した場合はこの端末のブラウザー内に残ります。<br>税務・会計・投資判断の代用ではありません。事業計画の参考用の概算です。</footer></main>
+<script>
+'use strict';
+const names={crop:'作物名',area:'栽培面積（㎡）',yield:'収穫量（kg）',price:'販売価格（円/kg）',saleRate:'販売可能率（%）',commission:'販売手数料（%）',fixed:'固定費（円）',variable:'変動費（円/kg）',other:'その他費用（円）',hours:'労働時間（h）',wage:'労働評価時給（円）'};
+const keys=Object.keys(names),defaults=Object.fromEntries(keys.map(k=>[k,document.getElementById(k).value]));
+const el=id=>document.getElementById(id),yen=n=>Number.isFinite(n)?Math.round(n).toLocaleString('ja-JP')+'円':'達成できません',kg=n=>Number.isFinite(n)?n.toLocaleString('ja-JP',{maximumFractionDigits:1})+'kg':'達成できません',pct=n=>Number.isFinite(n)?n.toLocaleString('ja-JP',{maximumFractionDigits:1})+'%':'達成できません';
+function calc(x){
+ for(const k of keys.slice(1))if(!Number.isFinite(x[k])||x[k]<0)throw Error('すべての数値欄に0以上の数値を入力してください。');
+ if(x.area<=0)throw Error('栽培面積は0より大きくしてください。');
+ if(x.saleRate>100||x.commission>=100)throw Error('販売可能率は100%以下、販売手数料は100%未満にしてください。');
+ const sold=x.yield*x.saleRate/100,revenue=sold*x.price,fee=revenue*x.commission/100,variable=x.yield*x.variable,fixed=x.fixed+x.other,labor=x.hours*x.wage;
+ const cash=revenue-fee-variable-fixed,profit=cash-labor,unit=x.saleRate/100*x.price*(1-x.commission/100)-x.variable;
+ const required=variable+fixed+labor,breakYield=unit>0?(fixed+labor)/unit:required===0?0:Infinity,breakPrice=sold>0?required/(sold*(1-x.commission/100)):required===0?0:Infinity,breakRate=x.yield*x.price*(1-x.commission/100)>0?100*required/(x.yield*x.price*(1-x.commission/100)):required===0?0:Infinity;
+ const yieldCases=[.8,1,1.2].map(mult=>({label:Math.round(mult*100)+'%（'+kg(x.yield*mult)+'）',profit:x.yield*mult*unit-fixed-labor}));
+ const saleCases=[-10,0,10].map(delta=>{const rate=Math.max(0,Math.min(100,x.saleRate+delta));return{label:pct(rate),profit:x.yield*(rate/100*x.price*(1-x.commission/100)-x.variable)-fixed-labor}});
+ if([sold,revenue,fee,variable,fixed,labor,cash,profit,unit,...yieldCases.map(s=>s.profit),...saleCases.map(s=>s.profit)].some(n=>!Number.isFinite(n))||[breakYield,breakPrice,breakRate].some(n=>Number.isNaN(n)))throw Error('入力値が大きすぎて計算できません。');
+ return {sold,revenue,fee,cash,profit,breakYield,breakPrice,breakRate,yieldCases,saleCases,labor,variable,fixed};
+}
+function read(){const x={crop:el('crop').value.trim()};if(!x.crop)throw Error('作物名を入力してください。');for(const k of keys.slice(1)){const v=el(k).value;if(v.trim()==='')throw Error('数値欄をすべて入力してください。');x[k]=Number(v)}return x}
+function fill(id,v){el(id).textContent=v}
+function list(id,items){el(id).replaceChildren(...items.map(s=>{const li=document.createElement('li'),label=document.createElement('span'),val=document.createElement('strong');label.textContent=s.label;val.textContent=yen(s.profit);val.className=s.profit<0?'negative':'positive';li.append(label,val);return li}))}
+let latest=null;function render(){try{const x=read(),r=calc(x);latest={x,r};el('error').hidden=true;for(const [id,v]of Object.entries({profit:yen(r.profit),cash:yen(r.cash),revenue:yen(r.revenue),sold:kg(r.sold),fee:yen(r.fee),breakYield:kg(r.breakYield),breakPrice:yen(Math.ceil(r.breakPrice)),breakRate:pct(r.breakRate)}))fill(id,v);el('profit').className=r.profit<0?'negative':'positive';el('cash').className=r.cash<0?'negative':'positive';fill('advice',r.breakRate>100?'販売可能率を100%にしても、労働評価込みの黒字にはなりません。単価・収穫量・費用の見直しが必要です。':r.breakRate===0?'この条件では費用を計上していないため、販売可能率0%でも赤字にはなりません。':'この条件で労働評価込みの収支を0円以上にするには、販売可能率が'+pct(r.breakRate)+'以上必要です。');list('yieldCases',r.yieldCases);list('saleCases',r.saleCases)}catch(e){latest=null;el('error').textContent=e.message;el('error').hidden=false;for(const id of ['profit','cash','revenue','sold','fee','breakYield','breakPrice','breakRate'])fill(id,'—');el('yieldCases').replaceChildren();el('saleCases').replaceChildren();fill('advice','条件を修正すると黒字化の目安を表示します。')}}
+for(const k of keys)el(k).addEventListener('input',render);
+el('reset').onclick=()=>{for(const k of keys)el(k).value=defaults[k];fill('status','架空の例に戻しました。');render()};
+el('save').onclick=()=>{if(!latest)return;try{localStorage.setItem('hatake-saisan-v2',JSON.stringify(latest.x));fill('status','この端末に保存しました。')}catch{fill('status','保存できませんでした。ブラウザーの設定を確認してください。')}};
+function cell(v){let s=String(v);if(/^[\s\u0000-\u001f]*[=+@\-]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"'}
+el('csv').onclick=()=>{if(!latest)return;const{x,r}=latest;const rows=[['項目','値'],...keys.map(k=>[names[k],x[k]]),['販売量（kg）',r.sold],['売上（円）',r.revenue],['手数料（円）',r.fee],['現金収支（円）',r.cash],['労働評価込み収支（円）',r.profit],['損益分岐収穫量（kg）',r.breakYield],['損益分岐販売価格（円/kg）',r.breakPrice],['必要な販売可能率（%）',r.breakRate],...r.yieldCases.map(s=>['収穫量 '+s.label+'の収支（円）',s.profit]),...r.saleCases.map(s=>['販売可能率 '+s.label+'の収支（円）',s.profit])];const csv='\ufeff'+rows.map(row=>row.map(cell).join(',')).join('\r\n'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='hatake-saisan.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
+try{const x=JSON.parse(localStorage.getItem('hatake-saisan-v2')||'null');if(x&&typeof x==='object')for(const k of keys)if(x[k]!==undefined)el(k).value=x[k]}catch{}render();
+</script></body></html>
