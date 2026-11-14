@@ -6,3 +6,5 @@
 - 2026-11-14: ローカルv0.6に異常値対策。ローカルでは計算30件、模擬操作15件が通過。
 - 2026-11-14: GitHub Arai-akihito101/hatake-saisan-noteのmainを確認（READMEのみ、push権限あり）。Cloudflare側にも接続アカウントがあり、既存Pagesプロジェクト6件を確認（この事業のプロジェクトは未作成）。公開用のGitHub版をpublic/index.html単一ファイルに再構成。過去のv0.6テスト成功を新実装のテスト結果として流用しない。
 - 次回: 本番ブラウザー動作の確認、Search Console登録、初期ユーザーのフィードバックを検討。計測値がない間は未測定と記録。
+
+- 2026-11-14: Cloudflare Pages プロジェクト `hatake-saisan-note` の作成APIが成功。GitHub main、出力ディレクトリ public と接続。デプロイ完了・公開ページの疎通はこの時点では未確認。
