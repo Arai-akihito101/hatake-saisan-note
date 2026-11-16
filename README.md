@@ -7,11 +7,11 @@
 すべてブラウザー内で計算し、入力値をサーバーへ送信しません。無料・ログイン不要・外部API不使用。
 
 ## 配信構成
-Cloudflare Pages: フレームワークなし／ビルド不要／公開ディレクトリ `public`／production branch `main`。静的HTMLのみでサーバー機能を使用しません。既存プロジェクトから独立しています。
+本番URL: https://hatake-saisan-note.nakagawa01984.workers.dev/ 。Cloudflare PagesのGit連携ビルドが停止したため、2026-11-16から同じHTMLをCloudflare Workersで配信しています。Pagesプロジェクトは削除せず、自動デプロイのみ無効化。GitHubの `public/index.html` が更新元で、GitHubへpushするだけではWorkerへ自動反映されません。
 
 ## 品質と制限
-2026-11-14: 過去のローカルv0.6の計算30件・模擬操作15件は成功。GitHub版は単一ファイルに再構成した別実装のため、**その45件のテスト結果はGitHub版の検証結果とはみなさない**。公開後の実ブラウザーテストが必要です。
+2026-11-14: 過去のローカルv0.6の計算30件・模擬操作15件は成功。GitHub版は単一ファイルに再構成した別実装のため、**その45件のテスト結果はGitHub版の検証結果とはみなさない**。2026-11-16に新実装の本番Chromeテスト（計算・編集・保存・CSV・リセット）を実施し成功しました。
 数値は仮定の試算であり、実際の利益や需要を保証しません。SEO・訪問者・収益は未測定です。
 
 ## 運用
-意思決定: `agent/goal.md`、調査: `agent/research.md`、変更履歴: `agent/history.md`、需要検証: `agent/experiments.md`。
+意思決定: `agent/goal.md`、調査: `agent/research.md`、変更履歴: `agent/history.md`、需要検証: `agent/experiments.md`、公開・障害: `agent/deployment.md`。
