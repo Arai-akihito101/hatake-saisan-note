@@ -1,0 +1,22 @@
+name: Verify public Worker site
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  live-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Inspect deployed response
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://hatake-saisan-note.nakagawa01984.workers.dev/'
+          curl --fail --show-error --silent --location --retry 8 --retry-delay 5 --retry-all-errors --connect-timeout 10 --max-time 30 -o /tmp/hatake-response.html "$URL"
+          test "$(wc -c </tmp/hatake-response.html)" -gt 5000
+          grep -q '畑の採算ノート' /tmp/hatake-response.html
+          grep -q 'breakRate' /tmp/hatake-response.html
+          grep -q 'CSV出力' /tmp/hatake-response.html
+          echo "Verified: publicly reachable HTML with expected calculator UI ($(wc -c </tmp/hatake-response.html) bytes)"
