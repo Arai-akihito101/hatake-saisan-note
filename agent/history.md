@@ -12,3 +12,8 @@
 - 2026-11-15: GitHub Actions のスモークテスト成功を再確認。Cloudflare Pagesの3件のデプロイはAPI上で `queued/idle` のまま。最新デプロイのビルドログには `2026-11-15T02:21:21Z Starting build...` が1行あるが、成功・失敗の確定情報はない。公開URLへの外部アクセスも確認できず。追加デプロイをむやみに再試行せず、ログと状態を次回再確認する。30日検証は未開始。
 
 - 2026-11-16: Cloudflare APIでデプロイ4件を再確認。最新 `48fafce3-6d22-4327-a903-3b1ac13f2bf1` を含めすべて `queued/idle`、開始・完了時刻なし。最新と前回のビルドログは各1行 `2026-11-16T02:17:35Z Starting build...` のみで、コンテナログなし。GitHub Actionsは2026-11-15実行も成功。外部から https://hatake-saisan-note.pages.dev/ のページ取得は失敗。原因は未確定であり、デプロイ成功・HTTP 200は確認できない。キュー滞留中の追加コミット・再試行を避ける。次回はCloudflare側のキュー進行とログの変化を最優先に調査し、公開後に実ブラウザーとSearch Consoleを確認する。30日検証は未開始。追加支出0円。
+
+- 2026-11-16（復旧）: Cloudflare Pagesで5件のビルドがqueued/idleのままで、ビルドコンテナ開始情報はなかった。GitHub Actions自体は成功。Pages Git連携のビルドキュー滞留が直接的な公開障害であり、内部原因はログで判別不能。
+- 2026-11-16（公開）: Cloudflare Workersに同じHTMLをAPI経由でアップロードし、workers.devを公開。URL https://hatake-saisan-note.nakagawa01984.workers.dev/ 。GitHub Actions curlの外部HTTP取得が成功（run 43792129066、12,789バイトのHTMLを確認）。
+- 2026-11-16（E2E）: Chromeブラウザー検証でCSVの負数にアポストロフィが混入する問題を発見し、ユーザー入力文字列への数式注入防御を残したまま数値出力を修正。GitHubコミット362fe72をWorkerへ反映。Chromeで計算・編集・端末保存・CSV・リセットが成功（run 43792548733）。
+- 2026-11-16（運用）: 旧Cloudflare PagesプロジェクトのGit自動デプロイのみ停止。事業の旧URLは配信未確認、Worker URLを正式な公開先とする。追加の有料契約なし。Day0=2026-11-16、Day30=2026-12-16、Day60=2027-01-15。SEO/訪問者/売上は未測定。次回は検索表示の計測方法と初期利用者の反応を優先。
