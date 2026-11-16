@@ -47,7 +47,7 @@ let latest=null;function render(){try{const x=read(),r=calc(x);latest={x,r};el('
 for(const k of keys)el(k).addEventListener('input',render);
 el('reset').onclick=()=>{for(const k of keys)el(k).value=defaults[k];fill('status','架空の例に戻しました。');render()};
 el('save').onclick=()=>{if(!latest)return;try{localStorage.setItem('hatake-saisan-v2',JSON.stringify(latest.x));fill('status','この端末に保存しました。')}catch{fill('status','保存できませんでした。ブラウザーの設定を確認してください。')}};
-function cell(v){let s=String(v);if(/^[\s\u0000-\u001f]*[=+@\-]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"'}
+function cell(v){let s=String(v);if(typeof v==='string'&&/^[\s\u0000-\u001f]*[=+@\-]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"'}
 el('csv').onclick=()=>{if(!latest)return;const{x,r}=latest;const rows=[['項目','値'],...keys.map(k=>[names[k],x[k]]),['販売量（kg）',r.sold],['売上（円）',r.revenue],['手数料（円）',r.fee],['現金収支（円）',r.cash],['労働評価込み収支（円）',r.profit],['損益分岐収穫量（kg）',r.breakYield],['損益分岐販売価格（円/kg）',r.breakPrice],['必要な販売可能率（%）',r.breakRate],...r.yieldCases.map(s=>['収穫量 '+s.label+'の収支（円）',s.profit]),...r.saleCases.map(s=>['販売可能率 '+s.label+'の収支（円）',s.profit])];const csv='\ufeff'+rows.map(row=>row.map(cell).join(',')).join('\r\n'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='hatake-saisan.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
 try{const x=JSON.parse(localStorage.getItem('hatake-saisan-v2')||'null');if(x&&typeof x==='object')for(const k of keys)if(x[k]!==undefined)el(k).value=x[k]}catch{}render();
 </script></body></html>
